@@ -35,6 +35,7 @@ static int i = 0;
     tagList.backgroundColor = [UIColor brownColor];
     _tagList = tagList;
     
+    // 点击标签，就会调用,点击标签，删除标签
     __weak typeof(_tagList) weakTagList = _tagList;
     _tagList.clickTagBlock = ^(NSString *tag){
         [weakTagList deleteTag:tag];

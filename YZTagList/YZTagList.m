@@ -25,7 +25,6 @@ CGFloat const imageViewWH = 20;
         _tagButtons = [NSMutableArray array];
     }
     return _tagButtons;
-
 }
 
 - (NSMutableDictionary *)tags
