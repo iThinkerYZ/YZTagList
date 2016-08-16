@@ -18,7 +18,13 @@ CGFloat const imageViewWH = 20;
 @end
 
 @implementation YZTagList
-
+- (NSMutableArray *)tagArray
+{
+    if (_tagArray == nil) {
+        _tagArray = [NSMutableArray array];
+    }
+    return _tagArray;
+}
 - (NSMutableArray *)tagButtons
 {
     if (_tagButtons == nil) {
@@ -103,6 +109,7 @@ CGFloat const imageViewWH = 20;
     
     // 保存到字典
     [self.tags setObject:tagButton forKey:tagStr];
+    [self.tagArray addObject:tagStr];
     
     // 设置按钮的位置
     [self updateTagButtonFrame:tagButton.tag extreMargin:YES];
@@ -137,6 +144,9 @@ CGFloat const imageViewWH = 20;
     
     // 移除字典
     [self.tags removeObjectForKey:tagStr];
+    
+    // 移除数组
+    [self.tagArray removeObject:tagStr];
     
     // 更新tag
     [self updateTag];

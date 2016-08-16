@@ -69,6 +69,11 @@
 @property (nonatomic, strong) UIColor *borderColor;
 
 /**
+ *  获取所有标签
+ */
+@property (nonatomic, strong, readonly) NSMutableArray *tagArray;
+
+/**
  *  添加标签
  *
  *  @param tagStr 标签文字
