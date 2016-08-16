@@ -14,16 +14,26 @@
 #import "YZTagGroupCell.h"
 #import "YZGroupHeaderView.h"
 #import "YZTagCell.h"
+#import "YZTagItem.h"
 static NSString * const hobbyCell = @"hobbyCell";
 static NSString * const tagGroupCell = @"tagGroupCell";
 @interface YZTagViewController ()<UICollectionViewDelegate>
 
 @property (nonatomic, strong) YZTagList *tagList;
 @property (nonatomic, strong) NSMutableArray *groups;
+@property (nonatomic, strong) NSMutableDictionary *selectTagDict;
 
 @end
 
 @implementation YZTagViewController
+
+- (NSMutableDictionary *)selectTagDict
+{
+    if (_selectTagDict == nil) {
+        _selectTagDict = [NSMutableDictionary dictionary];
+    }
+    return _selectTagDict;
+}
 
 - (YZTagList *)tagList
 {
@@ -31,9 +41,34 @@ static NSString * const tagGroupCell = @"tagGroupCell";
         _tagList = [[YZTagList alloc] initWithFrame:CGRectMake(0, 0, [UIScreen mainScreen].bounds.size.width, 0)];
         _tagList.tagBackgroundColor = [UIColor colorWithRed:20 / 255.0 green:145 / 255.0 blue:255 / 255.0 alpha:1];
         _tagList.tagCornerRadius = 7;
+        __weak typeof(self) weakSelf = self;
+        
+        _tagList.clickTagBlock = ^(NSString *tag){
+            [weakSelf clickTag:tag];
+            
+        };
         _tagList.tagColor = [UIColor whiteColor];
     }
     return _tagList;
+}
+
+- (void)clickTag:(NSString *)tag
+{
+    // 删除标签
+    [_tagList deleteTag:tag];
+    
+    // 刷新第0组
+    NSIndexSet *indexSex = [NSIndexSet indexSetWithIndex:0];
+    [self.tableView reloadSections:indexSex withRowAnimation:UITableViewRowAnimationNone];
+    
+    // 更新cell标题
+    YZTagCell *cell = self.selectTagDict[tag];
+    YZTagItem *item = cell.item;
+    item.isSelected = !item.isSelected;
+    cell.item = item;
+    
+    // 移除选中的cell
+    [self.selectTagDict removeObjectForKey:tag];
 }
 
 - (NSArray *)groups
@@ -135,12 +170,15 @@ static NSString * const tagGroupCell = @"tagGroupCell";
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     YZTagCell *cell = (YZTagCell *)[collectionView cellForItemAtIndexPath:indexPath];
-    cell.isSelected = !cell.isSelected;
+    YZTagItem *item = cell.item;
+    item.isSelected = !item.isSelected;
+    cell.item = item;
     
     NSString *tagStr = [NSString stringWithFormat:@"%@  ×",cell.tagLabel.text];
-    if (cell.isSelected) {
+    if (item.isSelected) {
         // 添加标签
         [self.tagList addTag:tagStr];
+        [self.selectTagDict setObject:cell forKey:tagStr];
     } else {
         // 删除标签
         [self.tagList deleteTag:tagStr];

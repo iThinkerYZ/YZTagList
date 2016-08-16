@@ -59,11 +59,10 @@ static NSString * const tagCell = @"tagCell";
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     YZTagCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:tagCell forIndexPath:indexPath];
-    
-    cell.tagLabel.layer.borderColor = [UIColor colorWithRed:221 / 255.0 green:221 / 255.0 blue:221 / 255.0 alpha:1].CGColor;
-    cell.tagLabel.layer.borderWidth = 1;
+
     YZTagItem *item = _tagGroup.data[indexPath.row];
-    cell.tagLabel.text = item.name;
+    cell.item = item;
+
     
     return cell;
 }

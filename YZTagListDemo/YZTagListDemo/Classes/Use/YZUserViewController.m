@@ -35,6 +35,12 @@ static int i = 0;
     tagList.backgroundColor = [UIColor brownColor];
     _tagList = tagList;
     
+    __weak typeof(_tagList) weakTagList = _tagList;
+    _tagList.clickTagBlock = ^(NSString *tag){
+        [weakTagList deleteTag:tag];
+
+    };
+    
     // 高度可以设置为0，会自动跟随标题计算
     tagList.frame = CGRectMake(0, 64, self.view.bounds.size.width, 0);
     // 设置标签背景色

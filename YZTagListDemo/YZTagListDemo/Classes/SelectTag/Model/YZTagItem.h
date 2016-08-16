@@ -10,5 +10,6 @@
 
 @interface YZTagItem : NSObject
 @property (nonatomic, strong) NSString *name;
+@property (nonatomic, assign) BOOL isSelected;
 + (instancetype)tagWithDict:(NSDictionary *)dict;
 @end

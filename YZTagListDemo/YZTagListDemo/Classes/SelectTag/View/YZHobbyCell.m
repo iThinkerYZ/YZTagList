@@ -16,6 +16,15 @@
 
 @implementation YZHobbyCell
 
+- (instancetype)initWithFrame:(CGRect)frame
+{
+    if (self = [super initWithFrame:frame]) {
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
+    }
+    return self;
+}
+
+
 - (void)setTagList:(YZTagList *)tagList
 {
     _tagList = tagList;

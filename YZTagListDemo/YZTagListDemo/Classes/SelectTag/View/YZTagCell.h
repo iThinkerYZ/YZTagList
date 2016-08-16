@@ -8,8 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
+@class YZTagItem;
 @interface YZTagCell : UICollectionViewCell
+@property (nonatomic, strong) YZTagItem *item;
 @property (weak, nonatomic) IBOutlet UILabel *tagLabel;
-@property (nonatomic, assign) BOOL isSelected;
 
 @end

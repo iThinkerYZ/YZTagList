@@ -67,6 +67,7 @@ CGFloat const imageViewWH = 20;
 
 - (CGFloat)tagListH
 {
+    if (self.tagButtons.count <= 0) return 0;
     return CGRectGetMaxY([self.tagButtons.lastObject frame]) + _tagMargin;
 }
 
@@ -118,7 +119,9 @@ CGFloat const imageViewWH = 20;
 // 点击标签
 - (void)clickTag:(UIButton *)button
 {
-    [self deleteTag:button.currentTitle];
+    if (_clickTagBlock) {
+        _clickTagBlock(button.currentTitle);
+    }
 }
 
 // 删除标签

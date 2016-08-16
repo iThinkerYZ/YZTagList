@@ -7,24 +7,27 @@
 //
 
 #import "YZTagCell.h"
+#import "YZTagItem.h"
+
+@interface YZTagCell ()
+
+@end
 
 @implementation YZTagCell
 
 - (void)awakeFromNib {
     // Initialization code
-}
-- (void)setSelected:(BOOL)selected
-{
-    [super setSelected:selected];
-    
-    
+    self.layer.borderColor = [UIColor colorWithRed:221 / 255.0 green:221 / 255.0 blue:221 / 255.0 alpha:1].CGColor;
+    self.layer.borderWidth = 1;
 }
 
-- (void)setIsSelected:(BOOL)isSelected
+- (void)setItem:(YZTagItem *)item
 {
-    _isSelected = isSelected;
+    _item = item;
     
-    _tagLabel.textColor = _isSelected?[UIColor colorWithRed:39 / 255.0 green:132 / 255.0 blue:235 / 255.0 alpha:1] : [UIColor colorWithRed:136 / 255.0 green:136 / 255.0 blue:136 / 255.0 alpha:1];
+    self.tagLabel.text = item.name;
+    
+    _tagLabel.textColor = item.isSelected?[UIColor colorWithRed:39 / 255.0 green:132 / 255.0 blue:235 / 255.0 alpha:1] : [UIColor colorWithRed:136 / 255.0 green:136 / 255.0 blue:136 / 255.0 alpha:1];
 }
 
 

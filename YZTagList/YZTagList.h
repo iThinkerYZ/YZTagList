@@ -68,7 +68,6 @@
  */
 @property (nonatomic, strong) UIColor *borderColor;
 
-
 /**
  *  添加标签
  *
@@ -89,5 +88,10 @@
  *  @param tagStr 标签文字
  */
 - (void)deleteTag:(NSString *)tagStr;
+
+/**
+ *  点击标签，执行Block
+ */
+@property (nonatomic, strong) void(^clickTagBlock)(NSString *tag);
 
 @end
