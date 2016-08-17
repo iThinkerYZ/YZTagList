@@ -12,6 +12,9 @@
 CGFloat const imageViewWH = 20;
 
 @interface YZTagList ()
+{
+    NSMutableArray *_tagArray;
+}
 @property (nonatomic, weak) UICollectionView *tagListView;
 @property (nonatomic, strong) NSMutableDictionary *tags;
 @property (nonatomic, strong) NSMutableArray *tagButtons;

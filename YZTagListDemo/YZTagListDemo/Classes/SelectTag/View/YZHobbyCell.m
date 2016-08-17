@@ -15,15 +15,13 @@
 @end
 
 @implementation YZHobbyCell
-
-- (instancetype)initWithFrame:(CGRect)frame
+- (instancetype)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
 {
-    if (self = [super initWithFrame:frame]) {
+    if (self = [super initWithStyle:style reuseIdentifier:reuseIdentifier]) {
         self.selectionStyle = UITableViewCellSelectionStyleNone;
     }
     return self;
 }
-
 
 - (void)setTagList:(YZTagList *)tagList
 {
