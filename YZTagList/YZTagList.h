@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 
 /**
- *  YZTagList高度会自动跟随标题计算
+ *  YZTagList高度会自动跟随标题计算，默认标签会自动计算宽度
  */
 @interface YZTagList : UIView
 
@@ -19,7 +19,7 @@
 @property (nonatomic, strong) UIImage *tagDeleteimage;
 
 /**
- *  标签内间距,默认10
+ *  标签间距,和距离左，上间距,默认10
  */
 @property (nonatomic, assign) CGFloat tagMargin;
 
@@ -72,6 +72,32 @@
  *  获取所有标签
  */
 @property (nonatomic, strong, readonly) NSMutableArray *tagArray;
+
+/**
+ *  是否需要自定义tagList高度，默认为Yes
+ */
+@property (nonatomic, assign) BOOL isFitTagListH;
+
+/**
+ *  是否需要排序功能
+ */
+@property (nonatomic, assign) BOOL isSort;
+
+/******自定义标签按钮******/
+/**
+ *  必须是按钮类
+ */
+@property (nonatomic, assign) Class tagClass;
+
+/******自定义标签尺寸******/
+@property (nonatomic, assign) CGSize tagSize;
+
+/******标签列表总列数 默认4列******/
+/**
+ *  标签间距会自动计算
+ */
+@property (nonatomic, assign) NSInteger tagListCols;
+
 
 /**
  *  添加标签

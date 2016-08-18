@@ -18,9 +18,15 @@ CGFloat const imageViewWH = 20;
 @property (nonatomic, weak) UICollectionView *tagListView;
 @property (nonatomic, strong) NSMutableDictionary *tags;
 @property (nonatomic, strong) NSMutableArray *tagButtons;
+/**
+ *  需要移动的矩阵
+ */
+@property (nonatomic, assign) CGRect moveFinalRect;
+@property (nonatomic, assign) CGPoint oriCenter;
 @end
 
 @implementation YZTagList
+
 - (NSMutableArray *)tagArray
 {
     if (_tagArray == nil) {
@@ -62,6 +68,8 @@ CGFloat const imageViewWH = 20;
     _tagCornerRadius = 5;
     _borderWidth = 0;
     _borderColor = _tagColor;
+    _tagListCols = 4;
+    _isFitTagListH = YES;
     _tagFont = [UIFont systemFontOfSize:13];
     self.clipsToBounds = YES;
 }
@@ -83,6 +91,10 @@ CGFloat const imageViewWH = 20;
 // 添加多个标签
 - (void)addTags:(NSArray *)tagStrs
 {
+    if (self.frame.size.width == 0) {
+        @throw [NSException exceptionWithName:@"YZError" reason:@"先设置标签列表的frame" userInfo:nil];
+    }
+    
     for (NSString *tagStr in tagStrs) {
         [self addTag:tagStr];
     }
@@ -90,9 +102,13 @@ CGFloat const imageViewWH = 20;
 // 添加标签
 - (void)addTag:(NSString *)tagStr
 {
+    Class tagClass = _tagClass?_tagClass : [YZTagButton class];
+  
     // 创建标签按钮
-    YZTagButton *tagButton = [YZTagButton buttonWithType:UIButtonTypeCustom];
-    tagButton.margin = _tagButtonMargin;
+    YZTagButton *tagButton = [tagClass buttonWithType:UIButtonTypeCustom];
+    if (_tagClass == nil) {
+        tagButton.margin = _tagButtonMargin;
+    }
     tagButton.layer.cornerRadius = _tagCornerRadius;
     tagButton.layer.borderWidth = _borderWidth;
     tagButton.layer.borderColor = _borderColor.CGColor;
@@ -105,6 +121,11 @@ CGFloat const imageViewWH = 20;
     [tagButton setBackgroundImage:_tagBackgroundImage forState:UIControlStateNormal];
     tagButton.titleLabel.font = _tagFont;
     [tagButton addTarget:self action:@selector(clickTag:) forControlEvents:UIControlEventTouchUpInside];
+    if (_isSort) {
+        // 添加拖动手势
+        UIPanGestureRecognizer *pan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(pan:)];
+        [tagButton addGestureRecognizer:pan];
+    }
     [self addSubview:tagButton];
     
     // 保存到数组
@@ -118,19 +139,117 @@ CGFloat const imageViewWH = 20;
     [self updateTagButtonFrame:tagButton.tag extreMargin:YES];
     
     // 更新自己的高度
-    CGRect frame = self.frame;
-    frame.size.height = self.tagListH;
-    [UIView animateWithDuration:0.25 animations:^{
-        self.frame = frame;
-    }];
+    if (_isFitTagListH) {
+        CGRect frame = self.frame;
+        frame.size.height = self.tagListH;
+        [UIView animateWithDuration:0.25 animations:^{
+            self.frame = frame;
+        }];
+    }
 }
 
 // 点击标签
 - (void)clickTag:(UIButton *)button
 {
+    if (_isSort) {
+        return;
+    }
+    
     if (_clickTagBlock) {
         _clickTagBlock(button.currentTitle);
     }
+}
+
+// 拖动标签
+- (void)pan:(UIPanGestureRecognizer *)pan
+{
+    // 获取偏移量
+    CGPoint transP = [pan translationInView:self];
+    
+    UIButton *tagButton = (UIButton *)pan.view;
+  
+    // 开始
+    if (pan.state == UIGestureRecognizerStateBegan) {
+        _oriCenter = tagButton.center;
+        
+        [self addSubview:tagButton];
+    }
+    
+    CGPoint center = tagButton.center;
+    center.x += transP.x;
+    center.y += transP.y;
+    tagButton.center = center;
+    
+    
+    
+    // 改变
+    if (pan.state == UIGestureRecognizerStateChanged) {
+        
+        // 获取当前按钮中心点在哪个按钮上
+        UIButton *otherButton = [self buttonCenterInButtons:tagButton];
+        
+        if (otherButton) { // 插入到当前按钮的位置
+            // 获取插入的角标
+            NSInteger i = otherButton.tag;
+            
+            // 获取当前角标
+            NSInteger curI = tagButton.tag;
+            
+            _moveFinalRect = otherButton.frame;
+            
+            // 排序
+            // 移除之前的按钮
+            [self.tagButtons removeObject:tagButton];
+            [self.tagButtons insertObject:tagButton atIndex:i];
+            
+            [self.tagArray removeObject:tagButton.currentTitle];
+            [self.tagArray insertObject:tagButton.currentTitle atIndex:i];
+            
+            // 更新tag
+            [self updateTag];
+
+            if (curI > i) { // 往前插
+                
+                // 更新之后标签frame
+                [UIView animateWithDuration:0.25 animations:^{
+                    [self updateLaterTagButtonFrame:i];
+                }];
+            } else { // 往后插
+                
+                // 更新之前标签frame
+                [UIView animateWithDuration:0.25 animations:^{
+                    [self updateBeforeTagButtonFrame:i];
+                }];
+            }
+        }
+        
+    }
+    
+    // 结束
+    if (pan.state == UIGestureRecognizerStateEnded) {
+        
+        [UIView animateWithDuration:0.25 animations:^{
+            if (_moveFinalRect.size.width == 0) {
+                tagButton.center = _oriCenter;
+            } else {
+                tagButton.frame = _moveFinalRect;
+            }
+        }];
+    }
+    
+    [pan setTranslation:CGPointZero inView:self];
+}
+
+// 看下当前按钮中心点在哪个按钮上
+- (UIButton *)buttonCenterInButtons:(UIButton *)curButton
+{
+    for (UIButton *button in self.tagButtons) {
+        if (curButton == button) continue;
+        if (CGRectContainsPoint(button.frame, curButton.center)) {
+            return button;
+        }
+    }
+    return nil;
 }
 
 // 删除标签
@@ -160,11 +279,13 @@ CGFloat const imageViewWH = 20;
     }];
     
     // 更新自己的frame
-    CGRect frame = self.frame;
-    frame.size.height = self.tagListH;
-    [UIView animateWithDuration:0.25 animations:^{
-        self.frame = frame;
-    }];
+    if (_isFitTagListH) {
+        CGRect frame = self.frame;
+        frame.size.height = self.tagListH;
+        [UIView animateWithDuration:0.25 animations:^{
+            self.frame = frame;
+        }];
+    }
 
 }
 
@@ -178,10 +299,20 @@ CGFloat const imageViewWH = 20;
     }
 }
 
+// 更新之前按钮
+- (void)updateBeforeTagButtonFrame:(NSInteger)beforeI
+{
+    for (int i = 0; i < beforeI; i++) {
+        // 更新按钮
+        [self updateTagButtonFrame:i extreMargin:NO];
+    }
+}
+
 // 更新以后按钮
 - (void)updateLaterTagButtonFrame:(NSInteger)laterI
 {
     NSInteger count = self.tagButtons.count;
+    
     for (NSInteger i = laterI; i < count; i++) {
         // 更新按钮
         [self updateTagButtonFrame:i extreMargin:NO];
@@ -201,9 +332,40 @@ CGFloat const imageViewWH = 20;
         preButton = self.tagButtons[preI];
     }
     
+    
     // 获取当前按钮
     YZTagButton *tagButton = self.tagButtons[i];
+    // 判断是否设置标签的尺寸
+    if (_tagSize.width == 0) { // 没有设置标签尺寸
+        // 自适应标签尺寸
+        // 设置标签按钮frame（自适应）
+        [self setupTagButtonCustomFrame:tagButton preButton:preButton extreMargin:extreMargin];
+    } else { // 按规律排布
+        // 计算标签按钮frame（regular）
+        [self setupTagButtonRegularFrame:tagButton];
+    }
     
+    
+}
+
+// 计算标签按钮frame（按规律排布）
+- (void)setupTagButtonRegularFrame:(UIButton *)tagButton
+{
+    // 获取角标
+    NSInteger i = tagButton.tag;
+    NSInteger col = i % _tagListCols;
+    NSInteger row = i / _tagListCols;
+    CGFloat btnW = _tagSize.width;
+    CGFloat btnH = _tagSize.height;
+    NSInteger margin = (self.bounds.size.width - _tagListCols * btnW - 2 * _tagMargin) / (_tagListCols - 1);
+    CGFloat btnX = _tagMargin + col * (btnW + margin);;
+    CGFloat btnY = _tagMargin + row * (btnH + margin);
+    tagButton.frame = CGRectMake(btnX, btnY, btnW, btnH);
+}
+
+// 设置标签按钮frame（自适应）
+- (void)setupTagButtonCustomFrame:(UIButton *)tagButton preButton:(UIButton *)preButton extreMargin:(BOOL)extreMargin
+{
     // 等于上一个按钮的最大X + 间距
     CGFloat btnX = CGRectGetMaxX(preButton.frame) + _tagMargin;
     
@@ -211,7 +373,6 @@ CGFloat const imageViewWH = 20;
     CGFloat btnY = preButton? preButton.frame.origin.y : _tagMargin;
     
     // 获取按钮宽度
-    
     CGFloat titleW = [tagButton.titleLabel.text sizeWithFont:_tagFont].width;
     CGFloat titleH = [tagButton.titleLabel.text sizeWithFont:_tagFont].height;
     CGFloat btnW = extreMargin?titleW + 2 * _tagButtonMargin : tagButton.bounds.size.width ;

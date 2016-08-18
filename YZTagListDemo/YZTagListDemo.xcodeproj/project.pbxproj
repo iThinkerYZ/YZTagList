@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EC41E4EC1D65F73B00FCAAA6 /* YZSortViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = EC41E4EB1D65F73B00FCAAA6 /* YZSortViewController.m */; };
 		EC9979E51D62A2CA0024CE8F /* YZHobbyCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EC9979E41D62A2CA0024CE8F /* YZHobbyCell.m */; };
 		EC9979E91D62A6D80024CE8F /* YZTagGroupCell.m in Sources */ = {isa = PBXBuildFile; fileRef = EC9979E71D62A6D80024CE8F /* YZTagGroupCell.m */; };
 		EC9979EA1D62A6D80024CE8F /* YZTagGroupCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = EC9979E81D62A6D80024CE8F /* YZTagGroupCell.xib */; };
@@ -31,6 +32,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		EC41E4EA1D65F73B00FCAAA6 /* YZSortViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZSortViewController.h; sourceTree = "<group>"; };
+		EC41E4EB1D65F73B00FCAAA6 /* YZSortViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZSortViewController.m; sourceTree = "<group>"; };
 		EC9979E31D62A2CA0024CE8F /* YZHobbyCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZHobbyCell.h; sourceTree = "<group>"; };
 		EC9979E41D62A2CA0024CE8F /* YZHobbyCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YZHobbyCell.m; sourceTree = "<group>"; };
 		EC9979E61D62A6D80024CE8F /* YZTagGroupCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YZTagGroupCell.h; sourceTree = "<group>"; };
@@ -80,6 +83,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EC41E4E61D65F72F00FCAAA6 /* Sort */ = {
+			isa = PBXGroup;
+			children = (
+				EC41E4E71D65F72F00FCAAA6 /* Controller */,
+				EC41E4E81D65F72F00FCAAA6 /* Model */,
+				EC41E4E91D65F72F00FCAAA6 /* View */,
+			);
+			path = Sort;
+			sourceTree = "<group>";
+		};
+		EC41E4E71D65F72F00FCAAA6 /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				EC41E4EA1D65F73B00FCAAA6 /* YZSortViewController.h */,
+				EC41E4EB1D65F73B00FCAAA6 /* YZSortViewController.m */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		EC41E4E81D65F72F00FCAAA6 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		EC41E4E91D65F72F00FCAAA6 /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
 		ECA5C57B1D61E2A7005DDF36 = {
 			isa = PBXGroup;
 			children = (
@@ -122,6 +158,7 @@
 		ECA5C59E1D61E586005DDF36 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				EC41E4E61D65F72F00FCAAA6 /* Sort */,
 				ECA5C59F1D61E586005DDF36 /* Other */,
 				ECA5C5A41D61E586005DDF36 /* SelectTag */,
 				ECA5C5A51D61E586005DDF36 /* Use */,
@@ -293,6 +330,7 @@
 				ECEEA14D1D62CB08002318CD /* YZGroupHeaderView.m in Sources */,
 				EC9979EE1D62A9410024CE8F /* YZTagCell.m in Sources */,
 				ECA5C5A61D61E586005DDF36 /* AppDelegate.m in Sources */,
+				EC41E4EC1D65F73B00FCAAA6 /* YZSortViewController.m in Sources */,
 				ECA5C5AA1D61E5B8005DDF36 /* YZUserViewController.m in Sources */,
 				EC9979E51D62A2CA0024CE8F /* YZHobbyCell.m in Sources */,
 				EC9979F21D62AE590024CE8F /* YZGroupItem.m in Sources */,
