@@ -82,6 +82,10 @@
  *  是否需要排序功能
  */
 @property (nonatomic, assign) BOOL isSort;
+/**
+ *  在排序的时候，放大标签的比例，必须大于1
+ */
+@property (nonatomic, assign) CGFloat scaleTagInSort;
 
 /******自定义标签按钮******/
 /**

@@ -25,6 +25,8 @@
     YZTagList *tagList = [[YZTagList alloc] init];
     // 高度可以设置为0，会自动跟随标题计算
     tagList.frame = CGRectMake(0, 64, self.view.bounds.size.width, self.view.bounds.size.height - 64);
+    // 设置排序时，缩放比例
+    tagList.scaleTagInSort = 1.3;
     // 需要排序
     tagList.isSort = YES;
     // 标签尺寸

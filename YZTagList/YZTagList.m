@@ -69,6 +69,7 @@ CGFloat const imageViewWH = 20;
     _borderWidth = 0;
     _borderColor = _tagColor;
     _tagListCols = 4;
+    _scaleTagInSort = 1;
     _isFitTagListH = YES;
     _tagFont = [UIFont systemFontOfSize:13];
     self.clipsToBounds = YES;
@@ -79,6 +80,14 @@ CGFloat const imageViewWH = 20;
     [super layoutSubviews];
     
     _tagListView.frame = self.bounds;
+}
+
+- (void)setScaleTagInSort:(CGFloat)scaleTagInSort
+{
+    if (_scaleTagInSort < 1) {
+        @throw [NSException exceptionWithName:@"YZError" reason:@"(scaleTagInSort)缩放比例必须大于1" userInfo:nil];
+    }
+    _scaleTagInSort = scaleTagInSort;
 }
 
 - (CGFloat)tagListH
@@ -151,6 +160,7 @@ CGFloat const imageViewWH = 20;
 // 点击标签
 - (void)clickTag:(UIButton *)button
 {
+    // 排序就没有点击功能了
     if (_isSort) {
         return;
     }
@@ -171,7 +181,9 @@ CGFloat const imageViewWH = 20;
     // 开始
     if (pan.state == UIGestureRecognizerStateBegan) {
         _oriCenter = tagButton.center;
-        
+        [UIView animateWithDuration:-.25 animations:^{
+            tagButton.transform = CGAffineTransformMakeScale(_scaleTagInSort, _scaleTagInSort);
+        }];
         [self addSubview:tagButton];
     }
     
@@ -212,8 +224,9 @@ CGFloat const imageViewWH = 20;
                 
                 // 更新之后标签frame
                 [UIView animateWithDuration:0.25 animations:^{
-                    [self updateLaterTagButtonFrame:i];
+                    [self updateLaterTagButtonFrame:i + 1];
                 }];
+                
             } else { // 往后插
                 
                 // 更新之前标签frame
@@ -229,12 +242,16 @@ CGFloat const imageViewWH = 20;
     if (pan.state == UIGestureRecognizerStateEnded) {
         
         [UIView animateWithDuration:0.25 animations:^{
-            if (_moveFinalRect.size.width == 0) {
+            tagButton.transform = CGAffineTransformIdentity;
+            if (_moveFinalRect.size.width <= 0) {
                 tagButton.center = _oriCenter;
             } else {
                 tagButton.frame = _moveFinalRect;
             }
+        } completion:^(BOOL finished) {
+            _moveFinalRect = CGRectZero;
         }];
+        
     }
     
     [pan setTranslation:CGPointZero inView:self];
