@@ -160,10 +160,6 @@ CGFloat const imageViewWH = 20;
 // 点击标签
 - (void)clickTag:(UIButton *)button
 {
-    // 排序就没有点击功能了
-    if (_isSort) {
-        return;
-    }
     
     if (_clickTagBlock) {
         _clickTagBlock(button.currentTitle);
